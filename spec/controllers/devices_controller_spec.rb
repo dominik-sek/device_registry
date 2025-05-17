@@ -18,16 +18,22 @@ RSpec.describe DevicesController, type: :controller do
         let(:new_owner_id) { create(:user).id }
 
         it 'returns an unauthorized response' do
-          expect(response.code).to eq(422)
+          #hit the endpoint
+          assign
+          #change response.code to response.status, code returns a string + change http code to match the error message
+          expect(response.status).to eq(401)
           expect(JSON.parse(response.body)).to eq({ 'error' => 'Unauthorized' })
         end
       end
 
       context 'when user assigns a device to self' do
         let(:new_owner_id) { user.id }
-
         it 'returns a success response' do
           assign
+          puts "Current user in test: #{user.inspect}"
+
+          puts "Response status: #{response.status}"
+          puts "Response body: #{response.body}"
           expect(response).to be_successful
         end
       end
@@ -42,6 +48,6 @@ RSpec.describe DevicesController, type: :controller do
   end
 
   describe 'POST #unassign' do
-    # TODO: implement the tests for the unassign action
+
   end
 end

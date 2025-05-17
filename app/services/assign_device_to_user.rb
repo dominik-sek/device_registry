@@ -8,7 +8,10 @@ class AssignDeviceToUser
   end
 
   def call
+    puts "requesting user id #{@requesting_user.id} to #{@new_device_owner_id}"
+
     raise RegistrationError::Unauthorized unless assign_to_self?
+    puts "Assigning: user #{@requesting_user.id} to #{@new_device_owner_id}"
 
     device = Device.find_or_create_by!(serial_number: @serial_number)
     is_assigned = DeviceAssignment.where(device_id: device.id).where(returned_at: nil).exists?
@@ -32,7 +35,6 @@ class AssignDeviceToUser
       assigned_at: Time.current,
       returned_at: nil
     )
-
   end
 
   private
