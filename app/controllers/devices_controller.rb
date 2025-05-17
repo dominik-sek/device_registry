@@ -9,29 +9,21 @@ class DevicesController < ApplicationController
       new_device_owner_id: params[:new_owner_id].to_i
     ).call
     render json: { message: 'Device assigned successfully' }, status: :ok
-
-  rescue RegistrationError::Unauthorized
-    render json: { error: 'Unauthorized' }, status: :unauthorized
-  rescue AssigningError::AlreadyUsedOnUser
-    render json: { error: 'You already used this device' }, status: :unprocessable_entity
-  rescue AssigningError::AlreadyUsedOnOtherUser
-    render json: { error: 'Device is already assigned to another user' }, status: :conflict
+  rescue StandardError => error
+    render ErrorHandler.handle(error)
 
   end
 
   def unassign
-    puts params
     ReturnDeviceFromUser.new(
       user: @current_user,
       serial_number: params[:device][:serial_number],
       from_user: params[:from_user].to_i
     ).call
-
     render json: { message: 'Device returned successfully' }, status: :ok
-  rescue ReturnDeviceError::Unauthorized
-    render json: { error: 'Unauthorized' }, status: :unauthorized
-  rescue ReturnDeviceError::DeviceNeverAssigned
-    render json: { error: 'No active assignment found for this device' }, status: :unprocessable_entity
+  rescue StandardError => error
+    render ErrorHandler.handle(error)
+
   end
 
   private

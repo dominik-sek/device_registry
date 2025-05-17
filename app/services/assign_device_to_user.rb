@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 class AssignDeviceToUser
   def initialize(requesting_user:, serial_number:, new_device_owner_id:)
     @requesting_user = requesting_user
@@ -8,10 +7,7 @@ class AssignDeviceToUser
   end
 
   def call
-    puts "requesting user id #{@requesting_user.id} to #{@new_device_owner_id}"
-
     raise RegistrationError::Unauthorized unless assign_to_self?
-    puts "Assigning: user #{@requesting_user.id} to #{@new_device_owner_id}"
 
     device = Device.find_or_create_by!(serial_number: @serial_number)
     is_assigned = DeviceAssignment.where(device_id: device.id).where(returned_at: nil).exists?

@@ -66,7 +66,6 @@ RSpec.describe DevicesController, type: :controller do
         it 'returns an unauthorized response' do
 
           unassign
-          puts response.body
           expect(response.status).to eq(401)
           expect(JSON.parse(response.body)).to eq({ 'error' => 'Unauthorized' })
         end
