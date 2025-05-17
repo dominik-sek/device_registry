@@ -50,8 +50,6 @@ rspec spec --format documentation
 ```
 ## Database
 The application uses sqlite3 as its database
-## Database
-The application uses sqlite3 as its database
 
 ### Schema
 
