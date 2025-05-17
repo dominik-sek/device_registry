@@ -49,6 +49,7 @@ RSpec.describe DevicesController, type: :controller do
       post :unassign,
            params: { from_user: from_user, device: { serial_number: serial_number } },
            session: { token: user.api_keys.first.token }
+
     end
     context 'when the user is authenticated' do
       context 'user returns the device from another user' do
