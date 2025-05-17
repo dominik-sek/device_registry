@@ -7,26 +7,30 @@ class AssignDeviceToUser
   end
 
   def call
-    raise RegistrationError::Unauthorized unless assign_to_self?
-
-    device = Device.find_or_create_by!(serial_number: @serial_number)
-    raise AssigningError::AlreadyUsedOnOtherUser if device_already_assigned?(device)
-    raise AssigningError::AlreadyUsedOnUser if device_previously_assigned_to_user?(device)
+    authorize_user!
+    device = find_or_create_device
+    device_already_assigned!(device)
+    device_previously_assigned_to_user?(device)
 
     create_assignment(device)
 
   end
 
   private
-  def assign_to_self?
-    @requesting_user.id == @new_device_owner_id
+  def authorize_user!
+    @requesting_user.id == @new_device_owner_id || raise(RegistrationError::Unauthorized)
   end
-  def device_already_assigned?(device)
-    device.device_assignments.where(returned_at: nil).exists?
+
+  def find_or_create_device
+    Device.find_or_create_by!(serial_number: @serial_number)
+  end
+
+  def device_already_assigned!(device)
+    raise AssigningError::AlreadyUsedOnOtherUser if device.device_assignments.where(returned_at: nil).exists?
   end
 
   def device_previously_assigned_to_user?(device)
-    device.device_assignments.where(user_id: @new_device_owner_id).exists?
+    raise AssigningError::AlreadyUsedOnUser if device.device_assignments.where(user_id: @new_device_owner_id).exists?
   end
 
   def create_assignment(device)

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module ReturnDeviceError
   class DeviceNeverAssigned < StandardError; end
   class DeviceAlreadyReturned < StandardError; end

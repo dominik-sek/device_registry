@@ -8,17 +8,29 @@ class ReturnDeviceFromUser
   end
 
   def call
-    device = Device.find_by(serial_number: @serial_number)
-    raise ReturnDeviceError::DeviceNotFound unless device
-    assignment = device.device_assignments.find_by!(user_id: @from_user, device_id: device.id)
+    device = find_device!
+    assignment = find_assignment!(device)
+    authorize_user!(assignment)
+    device_already_returned!(assignment)
 
-
-    raise ReturnDeviceError::Unauthorized unless assignment.user_id == @user.id
-    raise ReturnDeviceError::DeviceNeverAssigned unless assignment
-    raise ReturnDeviceError::DeviceAlreadyReturned unless assignment.returned_at.nil?
-
-    assignment.update!(
-      returned_at: Time.current
-    )
+    assignment.update!(returned_at: Time.current)
   end
+
+  private
+  def find_device!
+    Device.find_by(serial_number: @serial_number) || raise(ReturnDeviceError::DeviceNotFound)
+  end
+
+  def find_assignment!(device)
+    device.device_assignments.find_by(user_id: @from_user, device_id: device.id) || raise(ReturnDeviceError::DeviceNeverAssigned)
+  end
+
+  def authorize_user!(assignment)
+    raise ReturnDeviceError::Unauthorized unless assignment.user_id == @user.id
+  end
+
+  def device_already_returned!(assignment)
+    raise ReturnDeviceError::DeviceAlreadyReturned unless assignment.returned_at.nil?
+  end
+
 end

@@ -31,7 +31,7 @@ RSpec.describe ReturnDeviceFromUser do
       expect { return_device }.not_to raise_error
 
       assignment = DeviceAssignment.find_by(user_id: user.id)
-      expect(assignment.returned_at).not_to be_nil
+      expect(assignment&.returned_at).not_to be_nil
     end
   end
 
@@ -48,13 +48,13 @@ RSpec.describe ReturnDeviceFromUser do
 
   context 'when user tries to return a device that has never been assigned' do
     it 'raises an error' do
-      expect {
+      expect do
         described_class.new(
           user: user,
           from_user: user.id,
           serial_number: serial_number
         ).call
-      }.to raise_error(ReturnDeviceError::DeviceNotFound)
+      end.to raise_error(ReturnDeviceError::DeviceNotFound)
     end
   end
 
@@ -71,13 +71,13 @@ RSpec.describe ReturnDeviceFromUser do
     end
 
     it 'raises an unauthorized error' do
-      expect {
+      expect do
         described_class.new(
           user: user,
           from_user: other_user.id,
           serial_number: serial_number
         ).call
-      }.to raise_error(ReturnDeviceError::Unauthorized)
+      end.to raise_error(ReturnDeviceError::Unauthorized)
     end
   end
 end
