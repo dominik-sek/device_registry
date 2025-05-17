@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_16_183221) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_17_163735) do
   create_table "api_keys", force: :cascade do |t|
     t.integer "bearer_id", null: false
     t.string "bearer_type", null: false
@@ -28,6 +28,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_16_183221) do
     t.datetime "returned_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["device_id", "assigned_at"], name: "index_device_assignments_on_device_id_and_assigned_at"
+    t.index ["device_id", "returned_at"], name: "index_device_assignments_on_device_id_and_returned_at"
+    t.index ["device_id", "user_id"], name: "index_device_assignments_on_device_id_and_user_id"
     t.index ["device_id"], name: "index_device_assignments_on_device_id"
     t.index ["user_id"], name: "index_device_assignments_on_user_id"
   end
