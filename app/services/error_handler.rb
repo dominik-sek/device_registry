@@ -7,6 +7,7 @@ class ErrorHandler
     ReturnDeviceError::DeviceNeverAssigned =>{ status: :unprocessable_entity, error: "You already used this device"},
     ReturnDeviceError::DeviceAlreadyReturned => {status: :unprocessable_entity, error: "Device already returned"},
     ReturnDeviceError::Unauthorized => { status: :unauthorized, error: "Unauthorized"},
+    ReturnDeviceError::DeviceNotFound => { status: :not_found, error: "Device not found"},
   }
   def self.handle(error)
     mapping = ERROR_MAPPINGS[error.class]

@@ -54,7 +54,7 @@ RSpec.describe ReturnDeviceFromUser do
           from_user: user.id,
           serial_number: serial_number
         ).call
-      }.to raise_error(ReturnDeviceError::DeviceNeverAssigned)
+      }.to raise_error(ReturnDeviceError::DeviceNotFound)
     end
   end
 

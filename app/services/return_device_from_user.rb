@@ -9,7 +9,7 @@ class ReturnDeviceFromUser
 
   def call
     device = Device.find_by(serial_number: @serial_number)
-    raise ReturnDeviceError::DeviceNeverAssigned unless device
+    raise ReturnDeviceError::DeviceNotFound unless device
     assignment = device.device_assignments.find_by!(user_id: @from_user, device_id: device.id)
 
 
